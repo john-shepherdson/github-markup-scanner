@@ -1,525 +1,0 @@
-
-1.0%eosc-beyond-sqa_github-markup-scannerJavaFrontend"1748514614785*java2.BÈ
-9
-4src/main/java/eoscbeyond/eu/GitHubMarkupScanner.java2
-
-package4
-
-eoscbeyond.eu5
-&
-!eoscbeyond.eu.GitHubMarkupScanner7
-
-
-class8
-
-access9
-
-public10
-
-simple name11
-
-GitHubMarkupScanner12
-9
-3eoscbeyond.eu.GitHubMarkupScanner.MARKUP_EXTENSIONS14
-
-field15
-
-private16
-
-MARKUP_EXTENSIONS17
-8
-2eoscbeyond.eu.GitHubMarkupScanner.SEARCH_SUBSTRING19
-
-SEARCH_SUBSTRING20
-4
-.eoscbeyond.eu.GitHubMarkupScanner.objectMapper22
-
-objectMapper23
-1
-+com.fasterxml.jackson.databind.ObjectMapper25
-
-unknown26
-
-is type27
-
-
-uses28
-
-calls29
-B
-<eoscbeyond.eu.GitHubMarkupScanner#main([Ljava/lang/String;)V31
-
-method32
-
-
-main33
-
-
-references34
-K
-Eeoscbeyond.eu.GitHubMarkupScanner#scanRepository(Ljava/lang/String;)V36
-
-scanRepository37
-]
-Weoscbeyond.eu.GitHubMarkupScanner#parseGitHubUrl(Ljava/lang/String;)[Ljava/lang/String;39
-0
-*eoscbeyond.eu.GitHubMarkupScanner$FileInfo41
-a
-[eoscbeyond.eu.GitHubMarkupScanner#getRepositoryContents(Ljava/lang/String;)Ljava/util/List;43
-[
-Ueoscbeyond.eu.GitHubMarkupScanner#filterMarkupFiles(Ljava/util/List;)Ljava/util/List;45
-_
-Yeoscbeyond.eu.GitHubMarkupScanner#scanFile(Leoscbeyond/eu/GitHubMarkupScanner$FileInfo;)Z47
-
-parseGitHubUrl48
-
-getRepositoryContents49
--
-'com.fasterxml.jackson.databind.JsonNode51
-
-returns52
-w
-qcom.fasterxml.jackson.databind.ObjectMapper#readTree(Ljava/lang/String;)Lcom/fasterxml/jackson/databind/JsonNode;54
-H
-Bcom.fasterxml.jackson.databind.JsonNode#asText()Ljava/lang/String;56
-n
-hcom.fasterxml.jackson.databind.JsonNode#get(Ljava/lang/String;)Lcom/fasterxml/jackson/databind/JsonNode;58
-
-filterMarkupFiles59
-5
-/eoscbeyond.eu.GitHubMarkupScanner$FileInfo.name61
-
-scanFile62
-
-	has param63
-<
-6eoscbeyond.eu.GitHubMarkupScanner$FileInfo.downloadUrl65
-
-FileInfo66
-
-	protected67
-
-
-name68
-
-downloadUrl69
-^
-Xeoscbeyond.eu.GitHubMarkupScanner$FileInfo#<init>(Ljava/lang/String;Ljava/lang/String;)V71J
-
-1
-12Z
-
-3	
-354j‰
-B
-44<
-444532 *
-1¶ ¶(26:3B
-	
-9
-16
-
-
-11
-59
-@
-38:
-383932 *
-1y y(26:3B
-	
-9
-16
-
-
-11
-48
-
-53
-535426
-
-57
-575826
-
-24
-242526
-B
-42<
-424332 *
-1Œ Œ(26:3B
-	
-9
-16
-
-
-11
-49
-C
-60=
-606115 *
-1î	 î(240:3B
-	
-9
-67
-
-
-11
-68
-C
-64=
-646515 *
-1ï	 ï(240:3B
-	
-9
-67
-
-
-11
-69
-@
-21:
-212215 *
-10 0(26:3B
-	
-9
-16
-
-
-11
-23
-9
-64
-678 *
-1( ((!:3B
-	
-9
-10
-
-
-11
-12
-
-55
-555626
-@
-18:
-181915 *
-1/ /(26:3B
-	
-9
-16
-
-
-11
-20
-A
-40;
-40418 *
-1í í("26:3B
-	
-9
-16
-
-
-11
-66
-@
-35:
-353632 *
-1P P(26:3B
-	
-9
-10
-
-
-11
-37
-
-50
-505126
-@
-13:
-131415 *
-1) )(26:3B
-	
-9
-16
-
-
-11
-17
-@
-30:
-303132 *
-19 9(26:3B
-	
-9
-10
-
-
-11
-33
-B
-46<
-464732 *
-1Í Í(26:3B
-	
-9
-16
-
-
-11
-62
-C
-70=
-707132 *
-1ñ	 ñ(240:3B
-	
-9
-67
-
-
-11
-66rñ
-
-212427*
-10 0(&
-
-212428*
-10 0(&
-
-212428*
-10' 0(3
-
-212429*
-10: 0(F
-
-30627*
-1B! B((
-
-30628*
-1B B( 
-
-30629*
-1B/ B(B
-
-30634*
-1C C(
-
-303529*
-1C C(#
-
-35634*
-1R R(+
-
-353829*
-1R R(+
-
-354028*
-1X X(
-
-354034*
-1X X(
-
-35634*
-1X  X(5
-
-354229*
-1X  X(5
-
-354028*
-1[ [(
-
-354034*
-1[ [(
-
-35634*
-1[& [(7
-
-354429*
-1[& [(7
-
-351834*
-1bW b(g
-
-354027*
-1g g(
-
-354028*
-1g g(
-
-354034*
-1g g(
-
-35634*
-1h h(
-
-354629*
-1h h(
-
-351834*
-1n8 n(H
-
-424028*
-1Œ Œ(
-
-424034*
-1Œ Œ(
-
-425027*
-1¡ ¡(
-
-425028*
-1¡	 ¡(
-
-425052*
-1¡ ¡(*
-
-422434*
-1¡ ¡(*
-
-425329*
-1¡+ ¡(3
-
-422134*
-1¡ ¡(*
-
-422428*
-1¡ ¡(*
-
-422134*
-1¡ ¡(*
-
-424028*
-1¢ ¢(
-
-424034*
-1¢ ¢(
-
-425027*
-1¤ ¤(
-
-425028*
-1¤ ¤(
-
-425034*
-1¥ ¥(#
-
-425529*
-1¥0 ¥(6
-
-425052*
-1¥ ¥(#
-
-425034*
-1¥ ¥(#
-
-425729*
-1¥$ ¥('
-
-424029*
-1¦ ¦('
-
-425034*
-1§ §(
-
-425529*
-1§& §(,
-
-425052*
-1§ §(
-
-425034*
-1§ §(
-
-425729*
-1§ §(
-
-425034*
-1¨ ¨(
-
-425529*
-1¨. ¨(4
-
-425052*
-1¨ ¨(
-
-425034*
-1¨ ¨(
-
-425729*
-1¨ ¨(
-
-444028*
-1¶ ¶(
-
-444034*
-1¶ ¶(
-
-444028*
-1¶3 ¶(;
-
-444034*
-1¶3 ¶(;
-
-444028*
-1· ·(
-
-444034*
-1· ·(
-
-444027*
-1¹ ¹(
-
-444028*
-1¹ ¹(
-
-444034*
-1¹ ¹(
-
-446034*
-1º$ º((
-
-441334*
-1»% »(6
-
-464063*
-1Í Í(&
-
-464027*
-1Í' Í(+
-
-464028*
-1Í Í(&
-
-464034*
-1Í Í(&
-
-466034*
-1Î0 Î(4
-
-466434*
-1ÐI Ð(T
-
-461834*
-1Û# Û(3
-
-704029*
-1ñ	 ñ(
-
-704028*
-1ò ò(
-
-704034*
-1ò ò(
-
-706034*
-1ò ò(
-
-704028*
-1ó ó(
-
-704034*
-1ó ó(
-
-706434*
-1ó ó(
