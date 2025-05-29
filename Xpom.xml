@@ -1,0 +1,319 @@
+<!--
+ * Copyright © 2025 EOSC Beyond
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>eoscbeyond.eu</groupId>
+    <artifactId>github-markup-scanner</artifactId>
+    <inceptionYear>2025</inceptionYear>
+    <packaging>jar</packaging>
+    <name>GitHub Markup Scanner</name>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <mainClass>GitHubMarkupScanner</mainClass>
+        <start.class>${mainClass}</start.class>
+        <sonar.projectName>GitHub Markup Scanner</sonar.projectName>
+        <sonar.projectVersion>${project.version}</sonar.projectVersion>
+        <sonar.organization>eosc-beyond-sqa</sonar.organization>
+        <sonar.projectKey>eosc-beyond-sqa_github-markup-scanner</sonar.projectKey>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    </properties>
+    <description>GitHub Markup Scanner is a tool to scan GitHub repositories for markup files and extract metadata.</description>
+    <dependencies>
+        
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.15.2</version>
+        </dependency>
+        <!--Logging Support-->
+        <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>2.24.3</version>
+     </dependency>
+     <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>2.24.3</version>
+     </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>2.24.3</version>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- JUnit 5 for testing -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.12.0</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- testing -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.12.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.12.0</version>
+            <scope>test</scope>
+        </dependency>
+     </dependencies>
+    <profiles>
+        <profile>
+            <id>sonar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <sonar.token>${env.SONAR_TOKEN}</sonar.token>
+            </properties>
+        </profile>
+        <profile>
+            <id>coverage</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+    </profiles>
+  <build>
+    <plugins>
+        <!-- Depencency information -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.13.0</version>
+            <configuration>
+                <release>21</release>
+            </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>3.6.0</version>
+          <dependencies>
+            <dependency>
+              <groupId>com.puppycrawl.tools</groupId>
+              <artifactId>checkstyle</artifactId>
+              <version>10.21.4</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>properties</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+        <!--Spring Boot-->
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <version>3.2.2</version>
+            <configuration>
+                <mainClass>${start.class}</mainClass> <!-- Uses the property -->
+            </configuration>
+        </plugin>
+        <!--Docker Containerisation-->
+        <plugin>
+            <groupId>com.google.cloud.tools</groupId>
+            <artifactId>jib-maven-plugin</artifactId>
+            <version>3.4.4</version>
+            <configuration>
+                <to>
+                    <image>cessda/${project.artifactId}:${project.version}</image>
+                </to>
+                <container>
+                    <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+                </container>
+            </configuration>
+        </plugin>
+         <!--Jar packaging Support-->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>3.4.2</version>
+        </plugin>
+        <!--SonarQube Support-->
+        <plugin>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <version>5.0.0.4389</version>
+        </plugin>
+        <!-- License Plugin -->
+        <plugin>
+          <groupId>com.mycila</groupId>
+          <artifactId>license-maven-plugin</artifactId>
+          <version>4.6</version>
+          <configuration>
+              <properties>
+                  <owner>EOSC Beyond</owner>
+                  <year>2025</year>
+              </properties>
+              <licenseSets>
+                <licenseSet>
+                    <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
+              <excludes>
+                  <exclude>mvnw*</exclude>
+                  <exclude>.mvn/**</exclude>
+                  <exclude>.*</exclude>
+                   <exclude>quit</exclude>
+                  <exclude>Jenkinsfile</exclude>
+                  <exclude>LICENSE.txt</exclude>
+                  <exclude>*.md</exclude>
+                  <exclude>*.cff</exclude>
+                  <exclude>**/*.csv</exclude>
+                  <exclude>*.xml</exclude>
+                  <exclude>**/README</exclude>
+                  <exclude>**/.m2/**</exclude>
+                  <exclude>**/sonar-project.properties</exclude>
+                  <exclude>**/target/**</exclude>
+                  <exclude>input/**</exclude>
+                  <exclude>src/test/resources/**</exclude>
+                  <exclude>src/main/resources/**</exclude>
+              </excludes>
+              </licenseSet>
+    </licenseSets>
+              <mapping>
+                  <java>PHP</java>
+              </mapping>
+          </configuration>
+          <executions>
+              <execution>
+                  <goals>
+                      <goal>check</goal>
+                  </goals>
+              </execution>
+          </executions>
+      </plugin>
+      <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <configuration>
+                <mainClass>${start.class}</mainClass> <!-- Uses the property -->
+            </configuration>
+        </plugin>
+        <!-- Test coverage -->
+        <plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.12</version>
+				<executions>
+					<execution>
+						<id>prepare-agent-for-unit-tests</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report-for-unit-tests</id>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<title>Coverage with JaCoCo and Maven</title>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+        <!-- Surefire -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M7</version>
+                <executions>
+                    <execution>
+                        <id>default-test</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*Tests.java</include>
+                        <include>**/*TestCase.java</include>
+                    </includes>
+             
+                    <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
+                </configuration>
+            </plugin>
+            <!-- Javadoc -->
+            <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.11.2</version>
+				<executions>
+					<execution>
+						<id>javadoc-jar</id>
+						<phase>package</phase>
+						<goals><goal>jar</goal></goals>
+						<configuration>
+							<quiet>true</quiet>
+							<charset>UTF-8</charset>
+							<docencoding>UTF-8</docencoding>
+							<docfilessubdirs>true</docfilessubdirs>
+							<includeDependencySources>true</includeDependencySources>
+							<!-- For includes or excludes use pattern groupId:artifactId, not java package names -->
+							<dependencySourceIncludes>
+								<dependencySourceInclude>org.gesis.commons:*</dependencySourceInclude>
+							</dependencySourceIncludes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+    </plugins>
+  </build>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/john-shepherdson/eosc.github.markup.scanner/issues</url>
+    </issueManagement>
+
+    <scm>
+        <url>https://github.com/john-shepherdson/eosc.github.markup.scanner.git</url>
+    </scm>
+</project>

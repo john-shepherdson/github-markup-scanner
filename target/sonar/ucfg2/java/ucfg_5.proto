@@ -1,0 +1,345 @@
+
+Yeoscbeyond.eu.GitHubMarkupScanner#scanFile(Leoscbeyond/eu/GitHubMarkupScanner$FileInfo;)Zt
+h/Users/johnshepherdson/GitHub/github-markup-scanner/src/main/java/eoscbeyond/eu/GitHubMarkupScanner.javaÍ Í("15*°
+13
+×8 ×(jKI
+
+×< ×(M 
+%11java.io.InputStreamReader"java.io.InputStreamReaderÊ
+Ç
+
+×8 ×(j
+%12"8java.io.InputStreamReader#<init>(Ljava/io/InputStream;)V*>
+
+__unknown_file ("
+ 
+%11java.io.InputStreamReader*8
+
+__unknown_file (
+
+%10java.io.InputStream*
+12*Ç
+2
+ã ã(T
+R
+
+ã ã(
+%25java.io.PrintStream"__id*"
+
+__unknown_file (
+""Ú×
+
+ã ã(5
+%26void"0java.io.PrintStream#println(Ljava/lang/String;)V*8
+
+__unknown_file (
+
+%25java.io.PrintStream*3
+
+__unknown_file (
+  No matches found.2println(Ljava/lang/String;)*
+1*Ü
+14
+×N ×(XÃÀ
+
+×N ×(i
+%10java.io.InputStream"<java.net.URLConnection#getInputStream()Ljava/io/InputStream;*F
+
+__unknown_file (*
+(
+
+connectionjava.net.HttpURLConnection2getInputStream()*
+13*«
+15
+Î Î(S
+Q
+
+Î Î(
+%0java.io.PrintStream"__id*"
+
+__unknown_file (
+""‰
+†
+
+Î* Î(3
+%1java.lang.String"__id*Z
+
+__unknown_file (>*<
+2
+file*eoscbeyond.eu.GitHubMarkupScanner$FileInfo"
+namev
+t
+
+Î Î(3
+%2java.lang.String"__concat*
+
+Î Î('
+
+Scanning: *&
+
+Î* Î(3
+
+%1java.lang.StringÙÖ
+
+Î Î(4
+
+%3void"0java.io.PrintStream#println(Ljava/lang/String;)V*7
+
+__unknown_file (
+
+%0java.io.PrintStream*4
+
+__unknown_file (
+
+%2java.lang.String2println(Ljava/lang/String;)
+
+
+ÐC Ð(S
+%4java.lang.String"__id*a
+
+__unknown_file (E*C
+2
+file*eoscbeyond.eu.GitHubMarkupScanner$FileInfo"
+downloadUrl0.
+
+Ð? Ð(B
+%5java.net.URL"java.net.URL§
+¤
+
+Ð; Ð(T
+%6"(java.net.URL#<init>(Ljava/lang/String;)V*0
+
+__unknown_file (
+
+%5java.net.URL*4
+
+__unknown_file (
+
+%4java.lang.String¨¥
+
+Ð; Ð(e
+%7java.net.URLConnection"5java.net.URL#openConnection()Ljava/net/URLConnection;*0
+
+__unknown_file (
+
+%5java.net.URL2openConnection()z
+x
+
+Ð Ð(f(
+
+connectionjava.net.HttpURLConnection"__id*:
+
+__unknown_file (
+
+%7java.net.URLConnectionðí
+
+Ñ Ñ(*
+
+%8void"@java.net.HttpURLConnection#setRequestMethod(Ljava/lang/String;)V*F
+
+__unknown_file (*
+(
+
+connectionjava.net.HttpURLConnection*#
+
+__unknown_file (
+GET2$setRequestMethod(Ljava/lang/String;)ÔÑ
+
+Ò Ò(N
+
+%9void"Pjava.net.URLConnection#setRequestProperty(Ljava/lang/String;Ljava/lang/String;)V*F
+
+__unknown_file (*
+(
+
+connectionjava.net.HttpURLConnection**
+
+__unknown_file (
+
+User-Agent*7
+
+__unknown_file (
+GitHubMarkupScanner/1.028setRequestProperty(Ljava/lang/String;Ljava/lang/String;)*
+14*û
+5
+Ü' Ü(R„
+
+
+Ü' Ü(R
+%23java.lang.String"__concat*'
+
+Ü' Ü(D
+
+%21java.lang.String*'
+
+ÜG Ü(R
+
+%22java.lang.StringÜÙ
+
+Ü Ü(S
+%24void"0java.io.PrintStream#println(Ljava/lang/String;)V*8
+
+__unknown_file (
+
+%19java.io.PrintStream*5
+
+__unknown_file (
+
+%23java.lang.String2println(Ljava/lang/String;)*
+10*Ö
+6
+Ü Ü(T
+R
+
+Ü Ü(
+%19java.io.PrintStream"__id*"
+
+__unknown_file (
+""b
+`
+
+Ü' Ü(=
+%20java.lang.String"__concat*
+
+Ü' Ü(0	
+  Line *
+
+Ü3 Ü(=
+""p
+n
+
+Ü' Ü(D
+%21java.lang.String"__concat*'
+
+Ü' Ü(=
+
+%20java.lang.String*
+
+Ü@ Ü(D
+: “
+
+ÜG Ü(R
+%22java.lang.String")java.lang.String#trim()Ljava/lang/String;*6
+
+__unknown_file (
+
+linejava.lang.String2trim()*
+5*ã
+8
+Ú Ú(^
+\
+
+Û" Û(2
+%17java.lang.String"__id*/
+
+__unknown_file (
+api.eu.badgr.ioèå
+
+Û Û(3
+%18boolean"4java.lang.String#contains(Ljava/lang/CharSequence;)Z*6
+
+__unknown_file (
+
+linejava.lang.String*5
+
+__unknown_file (
+
+%17java.lang.String2"contains(Ljava/lang/CharSequence;)*
+6
+10*î
+9
+Ù Ù(,e
+c
+
+Ù Ù(,
+linejava.lang.String"__id*5
+
+__unknown_file (
+
+%15java.lang.Stringk
+i
+
+Ù Ù(5
+%16boolean"	__compare*
+
+Ù. Ù(0
+!=*
+
+Ù Ù(-
+""*
+
+Ù1 Ù(5
+""*	
+2
+8
+1*Á
+10
+Ù Ù(!©¦
+
+Ù Ù(,
+%15java.lang.String"3java.io.BufferedReader#readLine()Ljava/lang/String;*>
+
+__unknown_file ("
+ 
+readerjava.io.BufferedReader2
+readLine()*
+9*ß
+11
+× ×(ks
+q
+
+× ×(k 
+readerjava.io.BufferedReader"__id*;
+
+__unknown_file (
+
+%13java.io.BufferedReaderR
+P
+
+Ø Ø(
+linejava.lang.String"__id*"
+
+__unknown_file (
+""*
+10*¥
+12
+×% ×(kEC
+
+×) ×(7
+%13java.io.BufferedReader"java.io.BufferedReaderÅ
+Â
+
+×% ×(k
+%14"0java.io.BufferedReader#<init>(Ljava/io/Reader;)V*;
+
+__unknown_file (
+
+%13java.io.BufferedReader*>
+
+__unknown_file ("
+ 
+%11java.io.InputStreamReader*
+11*þ
+1
+æ æ(T
+R
+
+æ æ(
+%27java.io.PrintStream"__id*"
+
+__unknown_file (
+""€~
+
+æ æ(
+%28void"java.io.PrintStream#println()V*8
+
+__unknown_file (
+
+%27java.io.PrintStream2	println()"
+
+ç ç(
+"":@
+
+Í Í(*2
+file*eoscbeyond.eu.GitHubMarkupScanner$FileInfoB%#
+!eoscbeyond.eu.GitHubMarkupScannerX

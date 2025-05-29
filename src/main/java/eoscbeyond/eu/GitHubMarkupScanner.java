@@ -1,0 +1,246 @@
+/*
+ * Copyright © 2025 EOSC Beyond (${email})
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package eoscbeyond.eu;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+/**
+ * GitHubMarkupScanner scans a GitHub repository for markup files and searches for a specific substring.
+ * It supports various markup file extensions and outputs the lines containing the substring.
+ * This tool is useful for quickly identifying occurrences of a specific term in documentation files hosted on GitHub.
+ * * Usage:
+ * java GitHubMarkupScanner github-repo-url
+ * Example:
+ * java GitHubMarkupScanner 
+ */
+public class GitHubMarkupScanner {
+    private static final String[] MARKUP_EXTENSIONS = {
+        ".md", ".markdown", ".mdown", ".mkdn", ".mkd", ".mdwn", ".mdtxt", ".mdtext",
+        ".rst", ".txt", ".asciidoc", ".adoc", ".asc", ".textile", ".rdoc", ".org",
+        ".creole", ".mediawiki", ".wiki", ".pod"
+    };
+    
+    private static final String SEARCH_SUBSTRING = "api.eu.badgr.io";
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+    
+    /**
+     * Main method to run the GitHub Markup Scanner.
+     * Usage: java GitHubMarkupScanner github-repo-url
+     * Example: java GitHubMarkupScanner
+     * 
+     * @param args Command line arguments where the first argument is the GitHub repository URL.
+     */
+    public static void main(String[] args) {
+        if (args.length != 1) {
+            System.err.println("Usage: java GitHubMarkupScanner <github-repo-url>");
+            System.err.println("Example: java GitHubMarkupScanner https://github.com/john-shepherdson/eosc.node-registry.demo.git");
+            System.exit(1);
+        }
+        
+        String repoUrl = args[0];
+        try {
+            GitHubMarkupScanner scanner = new GitHubMarkupScanner();
+            scanner.scanRepository(repoUrl);
+        } catch (Exception e) {
+            System.err.println("Invalid URL format: " + e.getMessage());
+        }
+
+    }
+    
+    /**
+     * Scans the specified GitHub repository for markup files and searches for the defined substring.
+     * 
+     * @param repoUrl The URL of the GitHub repository to scan.
+     * @throws Exception If an error occurs while fetching or processing the repository contents.
+     */
+    public void scanRepository(String repoUrl) throws Exception {
+        // Extract owner and repo name from GitHub URL
+        String[] repoInfo = parseGitHubUrl(repoUrl);
+        String owner = repoInfo[0];
+        String repo = repoInfo[1];
+        
+        // Get repository contents from root directory
+        String apiUrl = String.format("https://api.github.com/repos/%s/%s/contents", owner, repo);
+        List<FileInfo> files = getRepositoryContents(apiUrl);
+        
+        // Filter for markup files
+        List<FileInfo> markupFiles = filterMarkupFiles(files);
+        
+        if (markupFiles.isEmpty()) {
+            System.out.println("No markup files found in the root directory.");
+            return;
+        }
+        
+        System.out.println("Scanning " + markupFiles.size() + " markup files for '" + SEARCH_SUBSTRING + "':");
+        System.out.println();
+        
+        // Scan each markup file
+        boolean found = false;
+        for (FileInfo file : markupFiles) {
+            if (scanFile(file)) {
+                found = true;
+            }
+        }
+        
+        if (!found) {
+            System.out.println("No occurrences of '" + SEARCH_SUBSTRING + "' found in markup files.");
+        }
+    }
+
+    /**
+     * Parses the GitHub repository URL to extract the owner and repository name.
+     * 
+     * @param url The GitHub repository URL.
+     * @return An array containing the owner and repository name.
+     * @throws Exception If the URL format is invalid.
+     */
+    private String[] parseGitHubUrl(String url) throws Exception {
+        // Handle different GitHub URL formats
+        Pattern pattern = Pattern.compile("https://github\\.com/([^/]+)/([^/]+)/?(?:\\.git)?");
+        Matcher matcher = pattern.matcher(url);
+        
+        if (!matcher.find()) {
+            throw new IllegalArgumentException("Invalid GitHub repository URL format. Expected: https://github.com/owner/repo");
+        }
+        
+        return new String[]{matcher.group(1), matcher.group(2)};
+    }
+    
+    /**
+     * Fetches the contents of the specified GitHub repository using the GitHub API.
+     * 
+     * @param apiUrl The API URL to fetch repository contents.
+     * @return A list of FileInfo objects representing files in the repository.
+     * @throws Exception If an error occurs while fetching or parsing the repository contents.
+     */
+    private List<FileInfo> getRepositoryContents(String apiUrl) throws Exception {
+        HttpURLConnection connection = (HttpURLConnection) new URL(apiUrl).openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", "application/vnd.github.v3+json");
+        connection.setRequestProperty("User-Agent", "GitHubMarkupScanner/1.0");
+        
+        int responseCode = connection.getResponseCode();
+        if (responseCode != 200) {
+            throw new Exception("Failed to fetch repository contents. HTTP " + responseCode + 
+                              ". Check if the repository exists and is public.");
+        }
+        
+        StringBuilder response = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+        }
+        
+        // Parse JSON response
+        JsonNode jsonArray = objectMapper.readTree(response.toString());
+        List<FileInfo> files = new ArrayList<>();
+        
+        for (JsonNode item : jsonArray) {
+            if ("file".equals(item.get("type").asText())) {
+                files.add(new FileInfo(
+                    item.get("name").asText(),
+                    item.get("download_url").asText()
+                ));
+            }
+        }
+        
+        return files;
+    }
+    
+    /**
+     * Filters the list of files to include only those with markup file extensions.
+     * 
+     * @param files The list of FileInfo objects to filter.
+     * @return A list of FileInfo objects that are markup files.
+     */
+    private List<FileInfo> filterMarkupFiles(List<FileInfo> files) {
+        List<FileInfo> markupFiles = new ArrayList<>();
+        
+        for (FileInfo file : files) {
+            String fileName = file.name.toLowerCase();
+            for (String extension : MARKUP_EXTENSIONS) {
+                if (fileName.endsWith(extension)) {
+                    markupFiles.add(file);
+                    break;
+                }
+            }
+        }
+        
+        return markupFiles;
+    }
+    
+    /**
+     * Scans a single markup file for the specified substring and prints matching lines.
+     * 
+     * @param file The FileInfo object representing the file to scan.
+     * @return true if the substring was found in the file, false otherwise.
+     * @throws Exception If an error occurs while reading the file.
+     */
+    private boolean scanFile(FileInfo file) throws Exception {
+        System.out.println("Scanning: " + file.name);
+        
+        HttpURLConnection connection = (HttpURLConnection) new URL(file.downloadUrl).openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("User-Agent", "GitHubMarkupScanner/1.0");
+        
+        boolean foundInFile = false;
+        int lineNumber = 0;
+        
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lineNumber++;
+                if (line.contains(SEARCH_SUBSTRING)) {
+                    System.out.println("  Line " + lineNumber + ": " + line.trim());
+                    foundInFile = true;
+                }
+            }
+        }
+        
+        if (!foundInFile) {
+            System.out.println("  No matches found.");
+        }
+        
+        System.out.println();
+        return foundInFile;
+    }
+    
+    /**
+     * Represents a file in the GitHub repository with its name and download URL.
+     */
+    private static class FileInfo {
+        final String name;
+        final String downloadUrl;
+        
+        FileInfo(String name, String downloadUrl) {
+            this.name = name;
+            this.downloadUrl = downloadUrl;
+        }
+    }
+}

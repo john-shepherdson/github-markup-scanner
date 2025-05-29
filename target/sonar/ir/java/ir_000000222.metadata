@@ -1,0 +1,13 @@
+eoscbeyond.eu.GitHubMarkupScanner#scanRepository(Ljava/lang/String;)V
+false
+8b9dccc9ca61631c013be08340199a3b
+eoscbeyond.eu.GitHubMarkupScanner#filterMarkupFiles(Ljava/util/List;)Ljava/util/List;
+eoscbeyond.eu.GitHubMarkupScanner#getRepositoryContents(Ljava/lang/String;)Ljava/util/List;
+eoscbeyond.eu.GitHubMarkupScanner#parseGitHubUrl(Ljava/lang/String;)[Ljava/lang/String;
+eoscbeyond.eu.GitHubMarkupScanner#scanFile(Leoscbeyond/eu/GitHubMarkupScanner$FileInfo;)Z
+java.lang.String#format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
+==
+isEmpty java.util.List#isEmpty()Z
+println java.io.PrintStream#println()V
+println java.io.PrintStream#println(Ljava/lang/String;)V
+size java.util.List#size()I

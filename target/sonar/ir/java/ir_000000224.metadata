@@ -1,0 +1,9 @@
+eoscbeyond.eu.GitHubMarkupScanner#filterMarkupFiles(Ljava/util/List;)Ljava/util/List;
+false
+de94507b5255f24a43bd90425f5d7b12
+java.lang.String#endsWith(Ljava/lang/String;)Z
+java.lang.String#toLowerCase()Ljava/lang/String;
+java.util.ArrayList#<init>()V
+java.util.ArrayList#instance-init#
+==
+add java.util.List#add(Ljava/lang/Object;)Z
