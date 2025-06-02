@@ -43,8 +43,7 @@ public class GitHubMarkupScanner {
         ".rst", ".txt", ".asciidoc", ".adoc", ".asc", ".textile", ".rdoc", ".org",
         ".creole", ".mediawiki", ".wiki", ".pod"
     };
-    
-    private static final String SEARCH_SUBSTRING = "api.eu.badgr.io";
+
     private static final ObjectMapper objectMapper = new ObjectMapper();
     
     /**
@@ -55,16 +54,20 @@ public class GitHubMarkupScanner {
      * @param args Command line arguments where the first argument is the GitHub repository URL.
      */
     public static void main(String[] args) {
-        if (args.length != 1) {
-            System.err.println("Usage: java GitHubMarkupScanner <github-repo-url>");
-            System.err.println("Example: java GitHubMarkupScanner https://github.com/john-shepherdson/eosc.node-registry.demo.git");
-            System.exit(1);
+        if (args.length != 2) {
+            args = new String[] { "https://github.com/john-shepherdson/eosc.node-registry.demo", "api.eu.badgr.io" };
+    
+            System.err.println("Usage: java eoscbeyond.eu.GitHubMarkupScanner <github-repo-url> <search-substring>");
+            System.err.println("Example: java eoscbeyond.eu.GitHubMarkupScanner https://github.com/john-shepherdson/eosc.node-registry.demo.git api.eu.badgr.io");
+            //return;
         }
         
-        String repoUrl = args[0];
+        String repo_url = args[0];
+        String search_substring = args[1];
+        
         try {
             GitHubMarkupScanner scanner = new GitHubMarkupScanner();
-            scanner.scanRepository(repoUrl);
+            scanner.scanRepository(repo_url,search_substring);
         } catch (Exception e) {
             System.err.println("Invalid URL format: " + e.getMessage());
         }
@@ -75,9 +78,10 @@ public class GitHubMarkupScanner {
      * Scans the specified GitHub repository for markup files and searches for the defined substring.
      * 
      * @param repoUrl The URL of the GitHub repository to scan.
+     * @param searchSubstring The substring to search for in the markup files.
      * @throws Exception If an error occurs while fetching or processing the repository contents.
      */
-    public void scanRepository(String repoUrl) throws Exception {
+    public void scanRepository(String repoUrl, String searchSubstring) throws Exception {
         // Extract owner and repo name from GitHub URL
         String[] repoInfo = parseGitHubUrl(repoUrl);
         String owner = repoInfo[0];
@@ -95,19 +99,23 @@ public class GitHubMarkupScanner {
             return;
         }
         
-        System.out.println("Scanning " + markupFiles.size() + " markup files for '" + SEARCH_SUBSTRING + "':");
+        System.out.println("Scanning " + markupFiles.size() + " markup files for '" + searchSubstring + "':");
         System.out.println();
         
         // Scan each markup file
         boolean found = false;
         for (FileInfo file : markupFiles) {
-            if (scanFile(file)) {
+            if (scanFile(file, searchSubstring)) {
+                System.out.println("Found occurrences in: " + file.name);
+                System.out.println("Download URL: " + file.downloadUrl);
+                System.out.println();
+                // Set found to true if any file contains the substring
                 found = true;
             }
         }
         
         if (!found) {
-            System.out.println("No occurrences of '" + SEARCH_SUBSTRING + "' found in markup files.");
+            System.out.println("No occurrences of '" + searchSubstring + "' found in markup files.");
         }
     }
 
@@ -138,6 +146,7 @@ public class GitHubMarkupScanner {
      * @throws Exception If an error occurs while fetching or parsing the repository contents.
      */
     public List<FileInfo> getRepositoryContents(String apiUrl) throws Exception {
+        @SuppressWarnings("deprecation")
         HttpURLConnection connection = (HttpURLConnection) new URL(apiUrl).openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", "application/vnd.github.v3+json");
@@ -202,9 +211,9 @@ public class GitHubMarkupScanner {
      * @return true if the substring was found in the file, false otherwise.
      * @throws Exception If an error occurs while reading the file.
      */
-    public boolean scanFile(FileInfo file) throws Exception {
+    public boolean scanFile(FileInfo file, String searchSubstring) throws Exception {
         System.out.println("Scanning: " + file.name);
-        
+        @SuppressWarnings("deprecation")
         HttpURLConnection connection = (HttpURLConnection) new URL(file.downloadUrl).openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("User-Agent", "GitHubMarkupScanner/1.0");
@@ -216,7 +225,7 @@ public class GitHubMarkupScanner {
             String line;
             while ((line = reader.readLine()) != null) {
                 lineNumber++;
-                if (line.contains(SEARCH_SUBSTRING)) {
+                if (line.contains(searchSubstring)) {
                     System.out.println("  Line " + lineNumber + ": " + line.trim());
                     foundInFile = true;
                 }

@@ -57,20 +57,33 @@ mvn clean test -Pdev
 javac -cp ".:jackson-databind.jar:jackson-core.jar:jackson-annotations.jar" GitHubMarkupScanner.java
 
 # Run the application
-java -cp ".:jackson-databind.jar:jackson-core.jar:jackson-annotations.jar" GitHubMarkupScanner https://github.com/user/repo
+java -cp ".:jackson-databind.jar:jackson-core.jar:jackson-annotations.jar"
+ GitHubMarkupScanner https://github.com/user/repo
 ```
 
 ### Example output
 
 ```shell
-Scanning 3 markup files for 'api.eu.badgr.io':
+Scanning: CHANGELOG.md
+  No matches found.
+
+Scanning: CODE_OF_CONDUCT.md
+  No matches found.
+
+Scanning: CONTRIBUTING.md
+  No matches found.
+
+Scanning: CONTRIBUTORS.md
+  No matches found.
+
+Scanning: LICENSE.txt
+  No matches found.
 
 Scanning: README.md
-  Line 15: Visit our API at https://api.eu.badgr.io/docs for documentation
-  Line 23: Configure endpoint: api.eu.badgr.io/v2/users
-
-Scanning: INSTALL.md
-  No matches found.
+  Line 3: [![SQAaaS badge]
+  (https://github.com/EOSC-synergy/SQAaaS/raw/master/badges/badges_150x116/
+  badge_software_silver.png)](https://api.eu.badgr.io/public/assertions/
+  WwFLpKJ0SqqREmM0OZtzWw "SQAaaS silver badge achieved")
 ```
 
 ## Project Structure
@@ -97,6 +110,7 @@ Several frameworks are used in this application.
 | Framework/Technology                               | Description                                               |
 | -------------------------------------------------- | --------------------------------------------------------- |
 | [Jackson JSON Library](https://github.com/FasterXML/jackson.git) | Jackson is a suite of data-processing tools for Java, including the flagship streaming JSON parser |
+| [junit-jupiter-api](https://github.com/junit-team/junit5 ) | Java unit testing framework |
 
 ## Resources
 

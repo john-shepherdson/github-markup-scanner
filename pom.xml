@@ -4,15 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>com.example</groupId>
+    <groupId>eoscbeyond.eu</groupId>
     <artifactId>github-markup-scanner</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>GitHub Markup Scanner</name>
     <description>A Java application that scans GitHub repository markup files for specific substrings</description>
-    <url>https://github.com/example/github-markup-scanner</url>
+    <url>https://github.com/john-shepherdson/github-markup-scanner</url>
 
     <properties>
         <!-- Java Version -->
@@ -23,6 +22,8 @@
         <mainClass>eoscbeyond.eu.GitHubMarkupScanner</mainClass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- The main class to start by executing java -jar -->
+        <start-class>eoscbeyond.eu.GitHubMarkupScanner</start-class>
 
         <!-- Dependency Versions -->
         <jackson.version>2.15.2</jackson.version>
@@ -304,7 +305,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>GitHubMarkupScanner</mainClass>
+                            <mainClass>eoscbeyond.eu.GitHubMarkupScanner</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -321,7 +322,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>GitHubMarkupScanner</mainClass>
+                            <mainClass>eoscbeyond.eu.GitHubMarkupScanner</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -401,4 +402,12 @@
             </properties>
         </profile>
     </profiles>
+    <issueManagement>
+        <system>GitHub</system>
+            <url>https://github.com/john-shepherdson/github-markup-scanner/issues</url>
+    </issueManagement>
+
+    <scm>
+        <url>https://github.com/john-shepherdson/github-markup-scanner.git</url>
+    </scm>
 </project>
