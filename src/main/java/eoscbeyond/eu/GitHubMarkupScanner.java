@@ -118,7 +118,7 @@ public class GitHubMarkupScanner {
      * @return An array containing the owner and repository name.
      * @throws Exception If the URL format is invalid.
      */
-    private String[] parseGitHubUrl(String url) throws Exception {
+    public String[] parseGitHubUrl(String url) throws Exception {
         // Handle different GitHub URL formats
         Pattern pattern = Pattern.compile("https://github\\.com/([^/]+)/([^/]+)/?(?:\\.git)?");
         Matcher matcher = pattern.matcher(url);
@@ -137,7 +137,7 @@ public class GitHubMarkupScanner {
      * @return A list of FileInfo objects representing files in the repository.
      * @throws Exception If an error occurs while fetching or parsing the repository contents.
      */
-    private List<FileInfo> getRepositoryContents(String apiUrl) throws Exception {
+    public List<FileInfo> getRepositoryContents(String apiUrl) throws Exception {
         HttpURLConnection connection = (HttpURLConnection) new URL(apiUrl).openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", "application/vnd.github.v3+json");
@@ -179,7 +179,7 @@ public class GitHubMarkupScanner {
      * @param files The list of FileInfo objects to filter.
      * @return A list of FileInfo objects that are markup files.
      */
-    private List<FileInfo> filterMarkupFiles(List<FileInfo> files) {
+    public List<FileInfo> filterMarkupFiles(List<FileInfo> files) {
         List<FileInfo> markupFiles = new ArrayList<>();
         
         for (FileInfo file : files) {
@@ -202,7 +202,7 @@ public class GitHubMarkupScanner {
      * @return true if the substring was found in the file, false otherwise.
      * @throws Exception If an error occurs while reading the file.
      */
-    private boolean scanFile(FileInfo file) throws Exception {
+    public boolean scanFile(FileInfo file) throws Exception {
         System.out.println("Scanning: " + file.name);
         
         HttpURLConnection connection = (HttpURLConnection) new URL(file.downloadUrl).openConnection();
@@ -234,7 +234,7 @@ public class GitHubMarkupScanner {
     /**
      * Represents a file in the GitHub repository with its name and download URL.
      */
-    private static class FileInfo {
+    static class FileInfo {
         final String name;
         final String downloadUrl;
         
