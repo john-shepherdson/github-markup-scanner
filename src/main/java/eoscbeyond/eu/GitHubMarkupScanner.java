@@ -106,9 +106,6 @@ public class GitHubMarkupScanner {
         boolean found = false;
         for (FileInfo file : markupFiles) {
             if (scanFile(file, searchSubstring)) {
-                System.out.println("Found occurrences in: " + file.name);
-                System.out.println("Download URL: " + file.downloadUrl);
-                System.out.println();
                 // Set found to true if any file contains the substring
                 found = true;
             }

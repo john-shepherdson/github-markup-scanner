@@ -7,11 +7,11 @@ for missing repositories or network issues.
 
 Key Features:
 
-1. Accepts a GitHub repository URL as a command-line argument
+1. Accepts a GitHub repository URL and a search string as command-line arguments
 2. Uses the GitHub API to fetch repository contents from the root directory
 3. Identifies markup files by common extensions (.md, .rst, .txt, .asciidoc, etc.)
 4. Downloads and scans each markup file line by line
-5. Prints any lines containing 'api.eu.badgr.io' with line numbers
+5. Prints any lines containing to search string with line numbers
 6. Handles various GitHub URL formats
 
 ## Prerequisites
@@ -47,18 +47,15 @@ mvn clean test jacoco:report
 # Run SonarQube analysis
 mvn clean verify sonar:sonar
 
-# Build with specific profile
-mvn clean package -Pci
+# Build Jar
+mvn clean package
 
 # Skip coverage checks (development)
 mvn clean test -Pdev
 
-# Compile the application
-javac -cp ".:jackson-databind.jar:jackson-core.jar:jackson-annotations.jar" GitHubMarkupScanner.java
-
 # Run the application
 java -cp ".:jackson-databind.jar:jackson-core.jar:jackson-annotations.jar"
- GitHubMarkupScanner https://github.com/user/repo
+ eoscbeyond.eu.GitHubMarkupScanner https://github.com/user/repo
 ```
 
 ### Example output
