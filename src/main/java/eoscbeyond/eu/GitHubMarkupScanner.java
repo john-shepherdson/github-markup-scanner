@@ -22,6 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,7 +45,15 @@ public class GitHubMarkupScanner {
         ".creole", ".mediawiki", ".wiki", ".pod"
     };
 
+    /** Logger. */
+    private static final Logger LOGGER =
+    Logger.getLogger(GitHubMarkupScanner.class.getName());
+
+    /** ObjectMapper for JSON parsing. */
     private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    /** List to store details of occurences of search string, if any. */
+    List<String> findings = new ArrayList<>();
     
     /**
      * Main method to run the GitHub Markup Scanner.
@@ -55,23 +64,32 @@ public class GitHubMarkupScanner {
      */
     public static void main(String[] args) {
         if (args.length != 2) {
-            args = new String[] { "https://github.com/john-shepherdson/eosc.node-registry.demo", "api.eu.badgr.io" };
+           // args = new String[] { "https://github.com/john-shepherdson/eosc.node-registry.demo", "api.eu.badgr.io" };
+            args = new String[] { "https://github.com/ARGOeu/argo-messaging", "api.eu.badgr.io" };
     
-            System.err.println("Usage: java eoscbeyond.eu.GitHubMarkupScanner <github-repo-url> <search-substring>");
-            System.err.println("Example: java eoscbeyond.eu.GitHubMarkupScanner https://github.com/john-shepherdson/eosc.node-registry.demo.git api.eu.badgr.io");
-            //return;
+            LOGGER.info("Invalid arguments. Please provide the GitHub repository URL and the search substring.");
+            LOGGER.info("Example: java eoscbeyond.eu.GitHubMarkupScanner https://github.com/john-shepherdson/eosc.node-registry.demo.git api.eu.badgr.io");
+            LOGGER.info("Using default values: " + args[0] + " and " + args[1] + "\n");
         }
         
-        String repo_url = args[0];
-        String search_substring = args[1];
+        String repoUrl = args[0];
+        String searchSubstring = args[1];
         
         try {
             GitHubMarkupScanner scanner = new GitHubMarkupScanner();
-            scanner.scanRepository(repo_url,search_substring);
+            scanner.scanRepository(repoUrl,searchSubstring);
         } catch (Exception e) {
-            System.err.println("Invalid URL format: " + e.getMessage());
+            LOGGER.info("Invalid URL format: " + e.getMessage());
         }
 
+    }
+
+    /**
+     * Default constructor for GitHubMarkupScanner.
+     * @return List of findings.
+     */
+    public List<String> getFindings() {
+        return findings;
     }
     
     /**
@@ -79,11 +97,11 @@ public class GitHubMarkupScanner {
      * 
      * @param repoUrl The URL of the GitHub repository to scan.
      * @param searchSubstring The substring to search for in the markup files.
-     * @throws Exception If an error occurs while fetching or processing the repository contents.
+     * @throws Exception If an info occurs while fetching or processing the repository contents.
      */
-    public void scanRepository(String repoUrl, String searchSubstring) throws Exception {
+    public void scanRepository(String repoUrlArg, String searchSubstringArg) throws Exception {
         // Extract owner and repo name from GitHub URL
-        String[] repoInfo = parseGitHubUrl(repoUrl);
+        String[] repoInfo = parseGitHubUrl(repoUrlArg);
         String owner = repoInfo[0];
         String repo = repoInfo[1];
         
@@ -95,25 +113,30 @@ public class GitHubMarkupScanner {
         List<FileInfo> markupFiles = filterMarkupFiles(files);
         
         if (markupFiles.isEmpty()) {
-            System.out.println("No markup files found in the root directory.");
+            LOGGER.info("No markup files found in the root directory.\n");
             return;
         }
         
-        System.out.println("Scanning " + markupFiles.size() + " markup files for '" + searchSubstring + "':");
-        System.out.println();
+        LOGGER.info("Scanning " + markupFiles.size() + " markup files in " + apiUrl + " for '" + searchSubstringArg + "':");
         
         // Scan each markup file
         boolean found = false;
         for (FileInfo file : markupFiles) {
-            if (scanFile(file, searchSubstring)) {
+            if (scanFile(file, searchSubstringArg)) {
                 // Set found to true if any file contains the substring
                 found = true;
             }
         }
         
         if (!found) {
-            System.out.println("No occurrences of '" + searchSubstring + "' found in markup files.");
+            LOGGER.info("\n No occurrences of '" + searchSubstringArg + "' found in markup files.");
         }
+        else {
+            LOGGER.info("\n" + findings.size() + " occurrence(s) of " + searchSubstringArg + " found in markup files:\n");
+            for (String finding : findings) {
+                LOGGER.info(finding);
+            }
+        }   
     }
 
     /**
@@ -121,9 +144,9 @@ public class GitHubMarkupScanner {
      * 
      * @param url The GitHub repository URL.
      * @return An array containing the owner and repository name.
-     * @throws Exception If the URL format is invalid.
+     * @throws IllegalArgumentException If the URL format is invalid.
      */
-    public String[] parseGitHubUrl(String url) throws Exception {
+    public String[] parseGitHubUrl(String url) throws IllegalArgumentException {
         // Handle different GitHub URL formats
         Pattern pattern = Pattern.compile("https://github\\.com/([^/]+)/([^/]+)/?(?:\\.git)?");
         Matcher matcher = pattern.matcher(url);
@@ -140,7 +163,7 @@ public class GitHubMarkupScanner {
      * 
      * @param apiUrl The API URL to fetch repository contents.
      * @return A list of FileInfo objects representing files in the repository.
-     * @throws Exception If an error occurs while fetching or parsing the repository contents.
+     * @throws IllegalArgumentException If an error occurs while fetching or parsing the repository contents.
      */
     public List<FileInfo> getRepositoryContents(String apiUrl) throws Exception {
         @SuppressWarnings("deprecation")
@@ -209,7 +232,7 @@ public class GitHubMarkupScanner {
      * @throws Exception If an error occurs while reading the file.
      */
     public boolean scanFile(FileInfo file, String searchSubstring) throws Exception {
-        System.out.println("Scanning: " + file.name);
+        LOGGER.info("Scanning: " + file.name);
         @SuppressWarnings("deprecation")
         HttpURLConnection connection = (HttpURLConnection) new URL(file.downloadUrl).openConnection();
         connection.setRequestMethod("GET");
@@ -220,20 +243,28 @@ public class GitHubMarkupScanner {
         
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
             String line;
+            String details;
             while ((line = reader.readLine()) != null) {
                 lineNumber++;
                 if (line.contains(searchSubstring)) {
-                    System.out.println("  Line " + lineNumber + ": " + line.trim());
+                    details = "File: " + file.name + ", Line " + lineNumber + ": " + line.trim();
                     foundInFile = true;
+                    // Store the finding
+                    findings.add(details);
                 }
             }
         }
         
-        if (!foundInFile) {
-            System.out.println("  No matches found.");
-        }
         
-        System.out.println();
+        // Close the connection
+        connection.disconnect();
+
+        // Return true if the substring was found in this file
+        if (!foundInFile) {
+           
+            LOGGER.info(" No occurrences of " + searchSubstring + " found in " + file.name + "\n");
+        }
+    
         return foundInFile;
     }
     
